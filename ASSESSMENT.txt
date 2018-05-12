@@ -1,0 +1,95 @@
+1. The steps I made during working on this project (workflow):
+- Creating a local database in PHPMyAdmin
+- Copying core files to local folder in MAMP htdocs (core 7.59)
+- Installing Drupal 7
+- Copying and installing modules from my basic extension package (Pathauto, Chaos Tools, Views, Module Filter, Entity, CKEditor, IMCE)
+- Copying and installing i18n module and dependency modules to enable multilingual content
+- Creating Topic Areas taxonomy vocabulary, adding topic areas as terms (Business Management, Business Finance, Innovation, Entrepreneurship)
+- Creating Difficulty Level taxonomy vocabulary, adding difficulty levels as terms (Introductory, Intermediate, Advanced, Specialty)
+- Creating Target Audience taxonomy vocabulary, added languages and as terms (English, German, French)
+- Translating taxonomy terms to French and German.
+- Rewriting URL alias patterns.
+- Creating Course content type, adding fields.
+- Installing Video Embed Field module to enable adding youtube video links to nodes.
+- Installing Field Links module to enable adding link field to nodes.
+- Installing Focal Point module to enable setting the focal point of an image when uploaded by user.
+- Translating field labels to German and French.
+- Installing Transliteration module.
+- Creating placeholder content (8 nodes of Course content type).
+- Translating nodes’ field content to German and French.
+- Creating Courses view.
+- Setting up exposed filters for Price range, Difficulty Level and Topic Area in Courses view.
+- Installing Select Translation module to avoid displaying multiple language versions of a node in the Courses list view.
+- Enabling Language Switcher block.
+- Creating front page. Adding link to Courses view.
+- Managing Course content type display (Default node layout).
+- Installing and configuring Flags module.
+- Creating “Wishlist” flag, defining labels.
+- Creating Wishlist view for listing nodes added by a user to his/her wishlist.
+- Enabling block languages module.
+- Translating blocks to secondary languages.
+- Translating text parts of the Built-in-interface using Translate interface.
+- Dumping database.
+- Writing documentation.
+- Uploading files to Github.
+
+
+2. Why Drupal 7?
+The agency I work for at the moment made the decision to start using Drupal 8 on new projects only a couple of months ago. Earlier we have had some basic D8 trainings with the team leader but I still have no real D8 experience. I’m still in a phase of learning D8 and have had only a couple of maintenance tasks completed in it on live sites. I decided to use my 3,5 years D7 experience to complete this assessment faster and on a higher level. As all the modules used in this assessment are available also in Drupal 8 a migration to D8 should cause no problems.
+
+3. What would I do otherwise if this was a real project
+- I would enable SEO modules.
+- I would translate user email templates.
+- I would use the Translation Helpers module more and would reduce the usage of translating strings.
+- Probably I should create a custom image style for the course Primary image.
+
+4. Strategic and architectural decisions
+- Default admin language of the site is English.
+- Drupal’s default Article content type has not been used.
+- Drupal’s default Basic Page content type is used to create the front page. Translations on the Basic Page content type have been enabled and the content is translated to all languages. The three nodes are linked through the translate feature, that makes available to click the language selector on any of the nodes of this type and have the same content displayed on the selected language.
+- Topic Areas, Course Language, Difficulty Level and Target Audience: the easiest way to add these four groups of properties to the Course content type would be to create select list type fields and define select options. Instead I have created a taxonomy vocabulary for each property and created the property options as taxonomy terms. This way if the site owner would like to enable to someone adding new options it is enough to give permission to create new taxonomy terms instead of giving permission to edit the content type itself.
+- Overlay module is disabled. I simply don’t like admin pages layout with Overlay enabled. I always ask the client before getting live if he/she needs that module.
+- URL alias patterns rewritten for content from “content/[node:title]” to “[node:content_type]/[node:title]”. It really makes no sense to me to have “content/“ in all nodes’ alias and I think it’s not good for SEO. Sometimes if there is only one content type on the site I even leave out “[node:content_type]/“. Also for Basic Page content type the [node:content_type] is deleted.
+- I always remove all the values that Drupal 7 by default has in the “Strings to Remove” section on URL Aliases page / Settings, like “a, an, as, at, etc..”. I think it’s good to have those words in the URLs for SEO.
+- I did not use the Internationalization Views module, because it’s not covered by Drupal’s security advisory policy. Instead the text elements of the Courses view are translated with the Translate Interface.
+
+4.1 Course content type
+- A custom content type named “Course” (machine name “course”) is created to store the courses data.
+- Translations are enabled on the Course content type. Each course node has an english, a german and a french version. The three nodes are linked through the translate feature.
+- All the fields on Course content type are required to fill except the Youtube Video field which is optional. 
+- Topic Areas, Course Language, Difficulty Level and Target Audience are referenced to the Course content type with term reference fields.
+- Youtube Video field is created with Video Embed Field module. Addition of Facebook videos is disabled but can be enabled in the field setting (module makes it also available).
+- Signup Page field and External Links fields are created with Field Link module.
+- Focal point of the image can be selected. This extension is added by the Focal Point module.
+- Files uploaded to the Download field (simple Image field) are uploaded to /sites/default/file/course_downloads. Allowed file extensions are pdf, doc and docx - the most common document file types.
+- Price field is a Decimal number field with Text field widget and a $ prefix. It accepts only numbers and dot as the decimal marker.
+
+4.2 Courses listing (Courses view)
+- A view is created to list all nodes of Course content type.
+- Exposed filters are added to enable the users narrow the list by a specific topic area, difficulty level and range of price - or any combination of this three arguments.
+- The view is translated to all three languages.
+- Both authenticated and anonymous users can see the view.
+
+4.3.1 Wishlist feature - Flag module
+- I decided to use the Flag module to build this feature. 
+- It allows "flagging" the selected content types - I enabled it only on Course content type. 
+- I created a flag called "Wishlist" and defined the strings. "Add to wishlist" appears on the node page if the content is not flagged. "Remove from Wishlist" appears if the node is already flagged by that user. 
+- A user can flag unlimited number of nodes and can remove flagging anytime from a node when he/she is logged in.
+- Only authenticated users can use the wishlist feature.
+- "Advice for anonymous users" block appears only for anonymous users to register or sign in to be able to add courses to their wishlist.
+- Another block "User list link" is displayed only for authenticated users. Contains a link to the Users view page.
+- The complete wishlist feature and the blocks are translated to all languages. The Users list view is not translated.
+
+4.3.2 Other users wishlists - Wishlist view
+- Flag module has a pretty good views integration which allows to create a Wishlist view to list all content flagged by a user. 
+- Adding the appropriate contextual filter and relationships makes available to show a personalized wishlist on every user's page with all his/her flagged content.
+
+
+5. Instructions for installing the project
+- Copy all files and folders from the initial commit of the amazee-online-courses project from my git repository to your project's root folder. Do NOT COPY the database file which is in the _database folder.
+- Create a new MySQL database and import the file from “_database” folder.
+- Edit settings.php file in the sites/default folder, set your database info on lines between 247 and 261.
+- Make sure Clean URLs are enabled (your_domain/en/admin/config/search/clean-urls).
+- However importing the database will enable the modules, make sure the following core modules are all enabled: Block, Contact, Content Translation, Contextual Links, Dashboard, Database logging, Field, Field SQL storage, Field UI, File, Filter, Help, Image, List, Locale, Menu, Node, Number, Options, Path, RDF, Search, 
+Shortcut, System, Taxonomy, Text, Toolbar, Update manager, User.
+- Also make sure the following contrib modules are all enabled: Chaos Tools, Field link, Flag, IMCE, Video Embed Field, Translation helpers, Select translation, Block languages, Contact translation, Field translation, Internationalization, Multilingual content, Multilingual select, String translation, Synchronize translations, Taxonomy translation, Translation redirect, Translation sets, Variable translation, Entity API, Focal Point, Pathauto, Token, Transliteration, CKeditor, Variable, Variable realm, Variable store,   Views, Views UI
